@@ -1,8 +1,8 @@
-Flask==3.1.0
-Flask_Cors==4.0.0
-numpy==2.2.4
-openai==1.68.2
-Pillow==11.1.0
-python-dotenv==1.0.1
-tensorflow==2.16.1
-tensorflow_intel==2.16.1
+Flask
+Flask_Cors
+numpy
+openai
+Pillow
+python-dotenv
+tensorflow
+tensorflow_intel
