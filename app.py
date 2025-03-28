@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.models import load_model
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
@@ -13,24 +14,21 @@ load_dotenv()
 # ✅ GitHub Personal Access Token for AI model
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
+# ✅ OpenAI Client for disposal suggestions
 client = OpenAI(
     base_url="https://models.inference.ai.azure.com",
     api_key=GITHUB_TOKEN
 )
 
+# ✅ Flask app setup
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Path to TFLite model
-model_path = "waste_classification_model.tflite"
+# ✅ Path to H5 model
+model_path = "waste_classification_model.h5"
 
-# ✅ Load TFLite model
-interpreter = tf.lite.Interpreter(model_path=model_path)
-interpreter.allocate_tensors()
-
-# ✅ Get input and output details for prediction
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+# ✅ Load H5 model correctly
+model = load_model(model_path, compile=False)
 
 # ✅ Define class labels
 categories = ["O", "R"]
@@ -50,23 +48,17 @@ def classify_waste():
         image = Image.open(image).convert("RGB")
         image = image.resize((224, 224))  # Resize for the model
         image = np.array(image) / 255.0  # Normalize
-        image = np.expand_dims(image, axis=0).astype(np.float32)  # Add batch dimension
+        image = np.expand_dims(image, axis=0)  # Add batch dimension
 
-        # ✅ Set input tensor
-        interpreter.set_tensor(input_details[0]['index'], image)
-
-        # ✅ Run inference
-        interpreter.invoke()
-
-        # ✅ Get prediction results
-        prediction = interpreter.get_tensor(output_details[0]['index'])
+        # ✅ Predict with H5 model
+        prediction = model.predict(image)
         predicted_class = np.argmax(prediction, axis=1)[0]
         predicted_label = categories[predicted_class]
 
         # ✅ Map to Recyclable/Organic
         classification_type = category_map[predicted_label]
 
-        # ✅ AI model for disposal suggestions
+        # ✅ Generate disposal suggestions using AI
         prompt = f"The item is classified as {classification_type}. Provide sustainable and eco-friendly disposal suggestions. Return the response in plain text without any formatting, bold, italic, large fonts, etc."
 
         response = client.chat.completions.create(
@@ -88,6 +80,7 @@ def classify_waste():
 
     except Exception as e:
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
