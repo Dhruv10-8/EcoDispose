@@ -5,3 +5,4 @@ openai
 Pillow
 python-dotenv
 tensorflow
+tensorflow_intel
