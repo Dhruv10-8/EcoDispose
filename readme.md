@@ -43,7 +43,7 @@ EcoDispose is an AI-powered waste classification platform built with Flask and H
 
 ---
 ## Video Demonstration
-[![EcoDispose Demo](videos/video.mp4)]
+Video Link: ![Link](https://drive.google.com/drive/folders/1bbUHPbiW1UwBAwh5GQoPMdJhewJHjsdM)
 
 ---
 ## How to get started
