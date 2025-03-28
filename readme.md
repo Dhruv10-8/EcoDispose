@@ -42,7 +42,10 @@ EcoDispose is an AI-powered waste classification platform built with Flask and H
 ![Recyclable](images/recyclable.png)
 
 ---
+## Video Demonstration
+[![EcoDispose Demo](videos/video.mp4)]
 
+---
 ## How to get started
 1. Clone the repository using `git clone https://github.com/Dhruv10-8/EcoDispose.git`
 2. Install the required packages using `pip install -r requirements.txt`
